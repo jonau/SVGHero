@@ -1,0 +1,37 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+.slide_set {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background-color: #000;
+}
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    margin: auto;
+    background: #fff;
+}
+.slide object {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+.eventCatcher {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 100;
+}

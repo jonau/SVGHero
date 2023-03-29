@@ -1,21 +1,31 @@
 import { SVGHero } from "./svg-hero";
 
+let currentSlide=0;
 const slides: HTMLElement[]=[]
 
-for (const slide of document.querySelectorAll(".slide") as NodeListOf<HTMLElement>){
-    if (slides.length>0){
-        slide.style.visibility="hidden";
+const keyListener=(e: any)=>{
+    if (e.key=="ArrowRight" || e.key=="ArrowDown" || e.key=="PageDown"){
+        const nextSlide=Math.min(currentSlide+1, slides.length-1)
+        if (nextSlide!=currentSlide) animateTransition(currentSlide, nextSlide);
+        currentSlide=nextSlide;
+        e.preventDefault();
+    }else if (e.key=="ArrowLeft" || e.key=="ArrowUp" || e.key=="PageUp"){
+        const nextSlide=Math.max(currentSlide-1, 0)
+        if (nextSlide!=currentSlide) animateTransition(currentSlide, nextSlide);
+        currentSlide=nextSlide;
+        e.preventDefault();
     }
-    slides.push(slide);
+    if(e.key=="F5"){
+        e.preventDefault();
+    }
 }
+
 
 function findTransitionHeroElements(from: HTMLElement, to: HTMLElement){
     function findSVGs(element: HTMLElement){
         const svgs: SVGSVGElement[]=[];
         for (const svg of element.querySelectorAll("svg")){
-            if (svg.id){
-                svgs.push(svg);
-            }
+            svgs.push(svg);
         }
         for (const obj of element.querySelectorAll("object")){
             const potentialSVG=obj.getSVGDocument()?.firstElementChild;
@@ -48,30 +58,33 @@ function animateTransition(from: number, to: number, duration: number=500){
     to_slide.style.zIndex="1";
     
     const heros=findTransitionHeroElements(from_slide, to_slide);
-    const svgHeros=heros.map(({from, to})=>new SVGHero(from as any, to as any));
-    const now=performance.now();
-    function animationFrame(t: number){
-        const dt=t-now;
-        const progress=dt/duration;
-        to_slide.style.opacity=progress.toString();
-        svgHeros.forEach(hero=>hero.setProgress(progress));
-        if (progress<1){
-            requestAnimationFrame(animationFrame);
-        }else{
-            from_slide.style.visibility="invisible";
-            from_slide.style.opacity="1";
-            to_slide.style.visibility="visible";
-            to_slide.style.opacity="1";
-            svgHeros.forEach(hero=>hero.remove());
-        }
+    if (heros.length==0){
+        from_slide.style.visibility="hidden";
+        from_slide.style.opacity="1";
+        to_slide.style.visibility="visible";
+        to_slide.style.opacity="1";
+        return;
     }
-    requestAnimationFrame(animationFrame);
+    const svgHeros=heros.map(({from, to})=>new SVGHero(from as any, to as any, duration));
+    setTimeout(()=>
+    {
+        from_slide.style.visibility="hidden";
+        from_slide.style.opacity="1";
+        to_slide.style.visibility="visible";
+        to_slide.style.opacity="1";
+    }
+    , from<to?duration*3/4:duration*1/4);
 }
 
 
-function test(){
-    setTimeout(()=>animateTransition(0, 1, 5000),500);
-    setTimeout(()=>animateTransition(1, 0, 5000),6000);
+for (const slide of Array.from(document.querySelector(".slide_set")?.children!) as HTMLElement[]){
+    if (slide.classList.contains("slide")){
+        if (slides.length>0){
+            slide.style.visibility="hidden";
+        }
+        slides.push(slide);
+    }
 }
 
-window.onload=test;
+window.addEventListener("keydown", keyListener);
+
