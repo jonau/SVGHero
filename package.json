@@ -1,0 +1,28 @@
+{
+    "name": "typescript-node",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "watch": "tsc-watch --onSuccess \"npx rollup src/index.js --file dist/index.mjs --format iife\"",
+        "browser-sync": "browser-sync start --server --files \"dist/**/*.mjs\"",
+        "w": "webpack-dev-server --mode development"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@svgdotjs/svg.js": "^3.1.2",
+        "browser-sync": "^2.29.1",
+        "rollup": "^3.20.2",
+        "tsc-watch": "^6.0.0",
+        "typescript": "^5.0.2"
+    },
+    "devDependencies": {
+        "@tsconfig/recommended": "^1.0.2",
+        "ts-loader": "^9.4.2",
+        "webpack": "^5.76.3",
+        "webpack-cli": "^5.0.1",
+        "webpack-dev-server": "^4.13.1"
+    }
+}
